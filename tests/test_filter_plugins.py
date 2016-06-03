@@ -17,6 +17,3 @@ def test_surround_by():
     assert surround_by(L, '|') == ['|1|', '|2|', '|3|']
 
     assert surround_by(1, '"') == 1
-
-
-test_surround_by()
