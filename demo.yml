@@ -1,0 +1,16 @@
+- name: demo custom filter
+  hosts: demo
+  remote_user: root
+  vars:
+    domains:
+      - aekt.net
+      - opscloud.xyz
+      - cuonglm.xyz
+  tasks:
+    - name: generate template
+      template:
+        src: templates/domain.conf.j2
+        dest: /tmp/domain.conf
+        owner: root
+        group: root
+        mode: 0644
