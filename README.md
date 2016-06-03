@@ -28,24 +28,27 @@ ALLOWED_HOSTS = [aekt.net, opscloud.xyz, cuonglm.xyz]
 ```
 Như vậy cần thêm một bộ filter để insert dấu “” vào để quote các string.
 ```
-ALLOWED_HOSTS = [{{ domains|surround_by_quote|join(", ") }}]
+ALLOWED_HOSTS = [{{ domains|surround_by('"')|join(", ") }}]
 ```
 
-- Không may là chức năng kiểu như bộ lọc surround_by_quote không có sẵn. Nhưng Ansible cung cấp các API cho bạn tự dev 1 cái để dùng theo nhu cầu
+- Không may là chức năng kiểu như bộ lọc `surround_by` không có sẵn. Nhưng Ansible cung cấp các API cho bạn tự dev 1 cái để dùng theo nhu cầu
 .
 
 ```
-def surround_by_quote(a_list):
-    return ['"%s"' % an_element for an_element in a_list]
+def surround_by(a_list, c):
+    if isinstance(a_list, list):
+        return ['{c}{e}{c}'.format(c=c, e=e) for e in a_list]
+    else:
+        return a_list
 
 
 class FilterModule(object):
     def filters(self):
-        return {'surround_by_quote': surround_by_quote}
+        return {'surround_by': surround_by}
 ```
 
 Trong đó:
-- `surround_by_quote` là tên function để sử dụng trong jinja2 filter.
+- `surround_by` là tên function để sử dụng trong jinja2 filter.
 - FilterModule class định nghĩa các filter method và trả về 1 từ điền với key là tên func, và value là function
 - Bộ lọc được đặt đâu tùy thích, miễn sao có cấu hình trong ansible
 ```
